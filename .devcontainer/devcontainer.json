@@ -1,0 +1,27 @@
+{
+	"name": "extract-load-transform-visualize",
+
+	"dockerComposeFile": ["../devcontainer-docker-compose.yaml"],
+	"service": "devcontainer",
+
+	"workspaceFolder": "/workspaces/extract-load-transform-visualize", // This is needed so that postCreateCommand can run in this same folder.
+
+    "remoteUser": "developer",  // This should match the USERNAME in your Dockerfile
+
+	// Configure tool-specific properties.
+	"customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash"
+            },
+			// Add the IDs of extensions you want installed when the container is created.
+			"extensions": [
+				"ms-toolsai.jupyter",
+				"ms-python.python"
+			]
+		}
+	}
+    
+
+}

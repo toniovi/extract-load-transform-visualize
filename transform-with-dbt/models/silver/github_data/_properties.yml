@@ -1,0 +1,31 @@
+models:
+  - name: github_data_users
+    columns:
+      - name: actor_id
+        tests:
+          - not_null
+          - unique
+  - name: github_data_repos
+    columns:
+      - name: repo_id
+        tests:
+          - not_null
+          - unique
+  - name: github_data_issue_events
+    columns:
+      - name: event_id
+        tests:
+          - not_null
+          - unique
+  - name: github_data_push_events
+    columns:
+      - name: event_id
+        tests:
+          - not_null
+          - unique
+  - name: github_data_pull_request_events
+    columns:
+      - name: event_id
+        tests:
+          - not_null
+          - unique

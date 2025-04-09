@@ -1,0 +1,91 @@
+version: "3"
+
+tasks:
+
+  install_project_dependencies_in_docker_container:
+    cmds:
+      - # Install uv
+      - |
+        curl -LsSf https://astral.sh/uv/install.sh | sudo env XDG_BIN_HOME="/usr/local/bin" sh
+
+      - # Install azure-cli
+      - |
+        curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+      
+      - # Install nvm
+      - |
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+
+      - |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+        # Install npm 
+        nvm install 22 
+
+
+
+
+
+
+  install_node:
+    cmds:
+      # Install node
+      - |
+        # installs nvm (Node Version Manager)
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+      - |
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+        # download and install Node.js (you may need to restart the terminal)
+        nvm install 20
+
+      - echo 'Successfully installed project dependencies in docker container'
+
+
+
+
+  setup:
+    cmds:
+      - |
+        cd extract-and-load-with-python
+        uv run python el.py -el
+      - |
+        cd transform-with-dbt
+        uv run dbt deps
+        uv run dbt build
+      - |
+        cd create-reports-with-evidence
+        npm install
+        npm run sources
+        npm run dev
+
+  extract:
+    cmds:
+      - |
+        cd extract-and-load-with-python
+        uv run python el.py -e {{.start}} {{.end}}
+  load:
+    cmds:
+      - |
+        cd extract-and-load-with-python
+        uv run python el.py -l {{.start}} {{.end}}
+
+  transform:
+    cmds:
+      - |
+        cd transform-with-dbt
+        uv run dbt build
+  transform-prod:
+    cmds:
+      - |
+        cd transform-with-dbt
+        uv run dbt build --target prod
+
+  bi:
+    cmds:
+      - |
+        cd create-reports-with-evidence
+        npm run sources
+        npm run dev
+

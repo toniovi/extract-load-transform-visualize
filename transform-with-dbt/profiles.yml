@@ -1,0 +1,161 @@
+duckdb_data_store:
+  outputs:
+    dev:
+      type: duckdb
+      path: ../store-and-compute-with-duckdb/duckdb_data_store.db
+      schema: dbt_dev
+    prod:
+      type: duckdb
+      path: ../store-and-compute-with-duckdb/duckdb_data_store.db
+      schema: dbt_prod
+  target: prod
+
+
+
+
+hybrid_compute_databricks_duckdb:
+  target: "{{ env_var('DBT_TARGET') }}"
+  outputs:
+    databricks_token:
+      token: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_TOKEN') }}"
+
+      schema: "dbt_{{ env_var('DBT_USER') }}"
+      type: databricks
+
+      host: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_SQL_WAREHOUSE_HTTP_PATH') }}"  # The default Compute to Use
+
+      auth_type: token
+
+      threads: 12
+
+    databricks_u2m:
+      schema: "dbt_{{ env_var('DBT_USER') }}"
+      type: databricks
+      
+      host: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_SQL_WAREHOUSE_HTTP_PATH') }}"  # The default Compute to Use
+      
+      auth_type: oauth
+      client_id: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_CLIENT_ID') }}"
+
+      threads: 12
+
+      compute: # Other Computes, Options : DATABRICKS_CLUSTER_HTTP_PATH_SHARED, DATABRICKS_SQL_WAREHOUSE_HTTP_PATH, DATABRICKS_CLUSTER_HTTP_PATH_DEVELOPERX_HIGH_POWER_SHORT_LIFE, DATABRICKS_CLUSTER_HTTP_PATH_DEVELOPERX_LONG_LIFE, DATABRICKS_CLUSTER_HTTP_PATH_SHARED, DATABRICKS_SQL_WAREHOUSE_HTTP_PATH
+        ClusterCompute:
+          http_path: "{{ env_var('DBT_ENV_DATABRICKS_CLUSTER_COMPUTE_HTTP_PATH') }}"
+
+    databricks_u2m_cluster:
+      schema: "dbt_{{ env_var('DBT_USER') }}"
+      type: databricks
+      
+      host: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DBT_ENV_DATABRICKS_CLUSTER_COMPUTE_HTTP_PATH') }}"  # The default Compute to Use
+      
+      auth_type: oauth
+      client_id: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_CLIENT_ID') }}"
+
+      threads: 12
+
+      compute: # Other Computes, Options : DATABRICKS_CLUSTER_HTTP_PATH_SHARED, DATABRICKS_SQL_WAREHOUSE_HTTP_PATH, DATABRICKS_CLUSTER_HTTP_PATH_DEVELOPERX_HIGH_POWER_SHORT_LIFE, DATABRICKS_CLUSTER_HTTP_PATH_DEVELOPERX_LONG_LIFE, DATABRICKS_CLUSTER_HTTP_PATH_SHARED, DATABRICKS_SQL_WAREHOUSE_HTTP_PATH
+        ClusterCompute:
+          http_path: "{{ env_var('DBT_ENV_DATABRICKS_CLUSTER_COMPUTE_HTTP_PATH') }}"
+
+    databricks_m2m:
+      schema: "dbt_{{ env_var('DBT_USER') }}"
+      type: databricks
+      
+      host: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_SQL_WAREHOUSE_HTTP_PATH') }}"  # The default Compute to Use
+      
+      auth_type: oauth
+      client_id: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_CLIENT_ID') }}"
+      client_secret: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_CLIENT_SECRET') }}"
+
+      threads: 12
+
+      compute: # Other Computes, Options : DATABRICKS_CLUSTER_HTTP_PATH_SHARED, DATABRICKS_SQL_WAREHOUSE_HTTP_PATH, DATABRICKS_CLUSTER_HTTP_PATH_DEVELOPERX_HIGH_POWER_SHORT_LIFE, DATABRICKS_CLUSTER_HTTP_PATH_DEVELOPERX_LONG_LIFE, DATABRICKS_CLUSTER_HTTP_PATH_SHARED, DATABRICKS_SQL_WAREHOUSE_HTTP_PATH
+        ClusterCompute:
+          http_path: "{{ env_var('DBT_ENV_DATABRICKS_CLUSTER_COMPUTE_HTTP_PATH') }}"
+
+    databricks_m2m_cluster:
+      schema: "dbt_{{ env_var('DBT_USER') }}"
+      type: databricks
+      
+      host: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DBT_ENV_DATABRICKS_CLUSTER_COMPUTE_HTTP_PATH') }}"  # The default Compute to Use
+      
+      auth_type: oauth
+      client_id: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_CLIENT_ID') }}"
+      client_secret: "{{ env_var('DBT_ENV_SECRET_DATABRICKS_CLIENT_SECRET') }}"
+
+      threads: 12
+
+      compute: # Other Computes, Options : DATABRICKS_CLUSTER_HTTP_PATH_SHARED, DATABRICKS_SQL_WAREHOUSE_HTTP_PATH, DATABRICKS_CLUSTER_HTTP_PATH_DEVELOPERX_HIGH_POWER_SHORT_LIFE, DATABRICKS_CLUSTER_HTTP_PATH_DEVELOPERX_LONG_LIFE, DATABRICKS_CLUSTER_HTTP_PATH_SHARED, DATABRICKS_SQL_WAREHOUSE_HTTP_PATH
+        ClusterCompute:
+          http_path: "{{ env_var('DBT_ENV_DATABRICKS_CLUSTER_COMPUTE_HTTP_PATH') }}"
+
+
+    duckdb_local_sources:
+      schema: "dbt_{{ env_var('DBT_USER') }}"
+      type: duckdb
+
+      path: local_catalogs/memory.duckdb
+      attach:
+        - path: "local_catalogs/{{ env_var('LANDING_CATALOG_NAME') }}-dev.duckdb"
+        - path: "local_catalogs/{{ env_var('LANDING_CATALOG_NAME') }}-uat.duckdb"
+        - path: "local_catalogs/{{ env_var('LANDING_CATALOG_NAME') }}-prd.duckdb"
+        - path: "local_catalogs/{{ env_var('BRONZE_CATALOG_NAME') }}-dev.duckdb"
+        - path: "local_catalogs/{{ env_var('BRONZE_CATALOG_NAME') }}-uat.duckdb"
+        - path: "local_catalogs/{{ env_var('BRONZE_CATALOG_NAME') }}-prd.duckdb"
+        - path: "local_catalogs/{{ env_var('SILVER_CATALOG_NAME') }}-dev.duckdb"
+        - path: "local_catalogs/{{ env_var('SILVER_CATALOG_NAME') }}-uat.duckdb"
+        - path: "local_catalogs/{{ env_var('SILVER_CATALOG_NAME') }}-prd.duckdb"
+        - path: "local_catalogs/{{ env_var('GOLD_CATALOG_NAME') }}-dev.duckdb"
+        - path: "local_catalogs/{{ env_var('GOLD_CATALOG_NAME') }}-uat.duckdb"
+        - path: "local_catalogs/{{ env_var('GOLD_CATALOG_NAME') }}-prd.duckdb"
+
+      threads: 8
+
+      extensions:
+      #  - azure
+        - httpfs
+        - parquet
+      filesystems:
+        - fs: abfs
+          account_name: "{{ env_var('DBT_ENV_AZURE_DATALAKE_STORAGE_ACCOUNT') }}"
+          anon: false
+          #connection_string: "{{ env_var('DBT_ENV_SECRET_AZURE_STORAGE_CONN_STRING') }}" #This works
+
+    duckdb_cloud_sources:
+      schema: "dbt_{{ env_var('DBT_USER') }}"
+      type: duckdb
+      path: local_catalogs/memory.duckdb
+      attach:
+        - path: "local_catalogs/{{ env_var('LANDING_CATALOG_NAME') }}-dev.duckdb"
+        - path: "local_catalogs/{{ env_var('LANDING_CATALOG_NAME') }}-uat.duckdb"
+        - path: "local_catalogs/{{ env_var('LANDING_CATALOG_NAME') }}-prd.duckdb"
+        - path: "local_catalogs/{{ env_var('BRONZE_CATALOG_NAME') }}-dev.duckdb"
+        - path: "local_catalogs/{{ env_var('BRONZE_CATALOG_NAME') }}-uat.duckdb"
+        - path: "local_catalogs/{{ env_var('BRONZE_CATALOG_NAME') }}-prd.duckdb"
+        - path: "local_catalogs/{{ env_var('SILVER_CATALOG_NAME') }}-dev.duckdb"
+        - path: "local_catalogs/{{ env_var('SILVER_CATALOG_NAME') }}-uat.duckdb"
+        - path: "local_catalogs/{{ env_var('SILVER_CATALOG_NAME') }}-prd.duckdb"
+        - path: "local_catalogs/{{ env_var('GOLD_CATALOG_NAME') }}-dev.duckdb"
+        - path: "local_catalogs/{{ env_var('GOLD_CATALOG_NAME') }}-uat.duckdb"
+        - path: "local_catalogs/{{ env_var('GOLD_CATALOG_NAME') }}-prd.duckdb"
+      
+      threads: 8
+
+      extensions:
+      #  - azure
+        - httpfs
+        - parquet
+      filesystems:
+        - fs: abfs
+          account_name: "{{ env_var('DBT_ENV_AZURE_DATALAKE_STORAGE_ACCOUNT') }}"
+          anon: false
+          #connection_string: "{{ env_var('DBT_ENV_SECRET_AZURE_STORAGE_CONN_STRING') }}" #This works
+
+
+
