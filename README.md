@@ -46,16 +46,17 @@ _Or in two commmands: First login to azure with `az login`, then run `. ./set_en
 
 ## Project Structure
 Each part of the project has a dedicated folder:
-1. The **transform-with-dbt** folder
+1. The **extract-and-load-with-python** folder
+    - You need to be inside this folder to run the _Extract and Load_ script (_el.py_) that will get public GitHub data into the local DuckDB Data Warehouse
+2. The **local-data-landing-zone** folder will be used for temporarily storing the raw GitHub data, before loading it into the Local DuckDB Data Warehouse or the Cloud Databricks Warehouse
+    - If using the Local DuckDB Data Warehouse, the **store-and-compute-with-duckdb** folder is where the Local DuckDB Data Warehouse will be stored (_duckdb_data_store.db_)
+4. The **transform-with-dbt** folder
     - Contains the dbt project
     - It is from inside this folder that you need to run all dbt commands (for ex. `dbt run`, `dbt debug`, ...)
-3. The **create-reports-with-evidence** folder
+5. The **create-reports-with-evidence** folder
     - Contains the [Evidence](https://evidence.dev/) project
     - From inside this folder you can run the commands to launch the Evidence BI dashboards
-5. The **extract-and-load-with-python** folder
-    - You need to be inside this folder to run the _Extract and Load_ script (_el.py_) that will get public GitHub data into the local DuckDB Data Warehouse
-6. The **store-and-compute-with-duckdb** folder is where the Local DuckDB Data Warehouse will be stored (_duckdb_data_store.db_)
-7. The **local-data-landing-zone** folder will be used for temporarily storing the raw GitHub data, before loading it into the Local DuckDB Data Warehouse
+
 
 
 ## Setup
@@ -94,7 +95,7 @@ You'll need to install uv in your local computer: https://docs.astral.sh/uv/gett
 ## Extract and Load
 > extract-and-load-with-python
 
-Extract and load is the process of taking data from one source, like an API, and loading it into another source, typically a data warehouse. In our case our source is the GitHub Archive, and our load targets is a local DuckDB database.
+Extract and Load is the process of taking data from one source, like an API, and loading it into another source, typically a data warehouse. In our case our source is the GitHub Archive, and our load targets is a local DuckDB database.
 
 ### Local usage
 > extract-and-load-with-python/el.py
@@ -126,7 +127,8 @@ uv run python el.py 2023-09-20 2023-09-23 -elp # extract and load 3 days of data
 ## Store the extracted data in local duckDB
 > store-and-compute-with-duckdb
 
-In order for Evidence to work the DuckDB file needs to be built into the `store-and-compute-with-duckdb/` directory. If you're looking to access it via the DuckDB CLI you can find it at `store-and-compute-with-duckdb/duckdb_data_store.db`.
+You can choose to store the data in your Azure/Databricks Lakehouse (default mode), or to store the data locally in a DuckDB Local Warehouse.
+- When working with a DuckDB Local Warehouse: In order for Evidence to work, the DuckDB Local Warehouse needs to be built into the `store-and-compute-with-duckdb/` directory. If you're looking to access it via the DuckDB CLI you can find it at `store-and-compute-with-duckdb/duckdb_data_store.db`.
 
 ## Transform the data with dbt
 > transform-with-dbt
