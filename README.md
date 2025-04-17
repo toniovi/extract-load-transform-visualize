@@ -1,4 +1,4 @@
-# Extract Load, Transform, Visualize
+# Template for Extract Load, Transform, Visualize
 This repo contains all the tools needed to:
 - Extract, Load Data into a Databricks Lakehouse
 - Transform the Data in the Lakehouse with dbt
