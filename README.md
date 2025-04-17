@@ -47,8 +47,8 @@ _Or in two commmands: First login to azure with `az login`, then run `. ./set_en
 ## Project Structure
 Each part of the project has a dedicated folder:
 1. The **extract-and-load-with-python** folder
-    - You need to be inside this folder to run the _Extract and Load_ script (_el.py_) that will get public GitHub data into the local DuckDB Data Warehouse
-2. The **local-data-landing-zone** folder will be used for temporarily storing the raw GitHub data, before loading it into the Local DuckDB Data Warehouse or the Cloud Databricks Warehouse
+    - You need to be inside this folder to run the _Extract and Load_ script (_el.py_) that will get public GitHub data into the Azure/Databricks Cloud Lakehouse (default mode), or the local DuckDB Data Warehouse (local mode)
+2. The **local-data-landing-zone** folder will be used for temporarily storing the raw GitHub data, before loading it into the Local DuckDB Data Warehouse or the Azure/Databricks Cloud Lakehouse
     - If using the Local DuckDB Data Warehouse, the **store-and-compute-with-duckdb** folder is where the Local DuckDB Data Warehouse will be stored (_duckdb_data_store.db_)
 4. The **transform-with-dbt** folder
     - Contains the dbt project
@@ -95,7 +95,7 @@ You'll need to install uv in your local computer: https://docs.astral.sh/uv/gett
 ## Extract and Load
 > extract-and-load-with-python
 
-Extract and Load is the process of taking data from one source, like an API, and loading it into another source, typically a data warehouse. In our case our source is the GitHub Archive, and our load targets is a local DuckDB database.
+Extract and Load is the process of taking data from one source, like an API, and loading it into another source, typically a data warehouse. In our case our source is the GitHub Archive, and our load targets is either an Azure Storage Container (default mode), or a local DuckDB database (local mode).
 
 ### Local usage
 > extract-and-load-with-python/el.py
@@ -124,7 +124,7 @@ uv run python el.py -lp # load any data into the production database
 uv run python el.py 2023-09-20 2023-09-23 -elp # extract and load 3 days of data into the production database
 ```
 
-## Store the extracted data in local duckDB
+## Local mode: Store the extracted data in local duckDB
 > store-and-compute-with-duckdb
 
 You can choose to store the data in your Azure/Databricks Lakehouse (default mode), or to store the data locally in a DuckDB Local Warehouse.
@@ -154,7 +154,7 @@ uv run dbt run-operation delete_all_data_in_databricks --args '{"dry_run": false
 ## Build the BI platform with Evidence
 > create-reports-with-evidence
 
-Evidence is an open-source, code-first BI platform. It integrates beautifully with dbt and DuckDB, and lets analysts author version-controlled, literate data products with Markdown and SQL. 
+Evidence is an open-source, code-first BI platform. It integrates beautifully with dbt and DuckDB (or dbt and Databricks), and lets analysts author version-controlled, literate data products with Markdown and SQL. 
 To install an run the Evidence server:
 ```shell
 cd create-reports-with-evidence
