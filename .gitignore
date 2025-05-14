@@ -15,6 +15,7 @@ env
 *.wal
 
 *.json.gz
+*.json
 
 .user.yml
 
