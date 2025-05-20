@@ -10,6 +10,8 @@ venv
 .env-*
 env
 
+*.env
+
 *.duckdb
 *.db
 *.wal
