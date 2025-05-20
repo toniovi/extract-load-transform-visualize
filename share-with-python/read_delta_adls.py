@@ -16,9 +16,10 @@ duckdb.sql(f"""
 # Query the data into a pandas DataFrame
 df = duckdb.sql("""
 SELECT *
-FROM delta_scan('az://published-dev/dbt_antonio/publlished_zone_github_data_users')
+FROM delta_scan('az://gold-dev/dbt_antonio/gold_zone_github_data_users')
 """).df()
 
+
 # Export to Excel
-df.to_excel("github_data_users.xlsx", index=False)
+df.to_excel("gold_zone_github_data_users.xlsx", index=False)
 
